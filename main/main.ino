@@ -23,13 +23,14 @@ void set_ADC(void)
   // Registrador de Seleção
   ADMUX |= 0b01000000; // 01 ref(Vcc); 0 (ADC - SEM ADLAR); 0 (RESERVADO); 0000 (MUX p/ ADC0)
   // Registrador de Status
-  ADCSRA |= 0b10000111; // 1 (ADEN: Enable); 00 (ADSC: nenhum efeito e ADATE: sem auto trigger); 00 (ADIF: Flag de interrupção e ADIE: Interrupt Enable); 111 (Prescaler)
+  ADCSRA |= 0b11000111; // 1 (ADEN: Enable); 10 (ADSC: Start Conversion e ADATE: sem auto trigger); 00 (ADIF: Flag de interrupção e ADIE: Interrupt Enable); 111 (Prescaler - Divisão por 128)
   // Habilita uso de interrupção
   sei();
 }
 
 int main()
 {
+  Serial.begin(9600);
   uint8_t ad_value;
 
   DDRB &= 0b11110011; // entrada (PB2 e PB3)
@@ -41,15 +42,9 @@ int main()
   while (true)
   {
     set_ADC();
-    while (!(ADCSRA & 0b00010000))
+    while (!(ADCSRA & 0b00010000)) // aguarda conversao
       ;
     ad_value = ADC;
-
-    if ()
-    {
-    }
-    else
-    {
-    }
+    Serial.println(ad_value);
   }
 }
